@@ -39,10 +39,10 @@ with open("/john5/scr1/mhahn/PUKWAC/mis.tsv", "w") as outFile_MIs:
 #      print(adverb, verb)
       assert pairsPerVerb[verb][adverb] == pairsPerAdverb[adverb][verb]
       pmi = math.log(pairsPerVerb[verb][adverb]) - math.log(marginalPerAdverb[adverb]) - math.log(marginalPerVerb[verb]) + math.log(overallCount)
-      print("\t".join([adverb, verb, str(pmi)]), file=outFile)
+      print("\t".join([adverb, verb, str(pmi)]).encode('utf8', 'ignore').decode("utf8"), file=outFile)
       mi += pmi * pairsPerVerb[verb][adverb]
     mi = mi / marginalPerAdverb[adverb]
-    print("\t".join([adverb, str(mi)]), file=outFile_MIs)
+    print("\t".join([adverb, str(mi)]).encode('utf8', 'ignore').decode("utf8"), file=outFile_MIs)
     print(adverb, mi, "MAXIMUM", math.log(len(pairsPerAdverb[adverb])))
 #    assert mi <= math.log(len(pairsPerAdverb[adverb])) + 0.1
 

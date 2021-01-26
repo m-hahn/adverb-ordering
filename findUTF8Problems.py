@@ -2,18 +2,6 @@ import math
 import random
 from collections import defaultdict
 
-sumLogDistancePerAdverb = defaultdict(int)
-sumDistancePerAdverb = defaultdict(int)
-marginalPerAdverb = defaultdict(int)
-overallPairsCount = 0
-def save1(table, name):
-  with open(f"/john5/scr1/mhahn/PUKWAC/{name}", "w") as outFile:
-    for x in table:
-      try:
-         print("\t".join([x, str(table[x])]).encode('utf8', 'ignore').decode("utf8"), file=outFile)
-      except UnicodeEncodeError:
-         print("ERROR")
-
 
 word = 0
 lemma = 1
@@ -62,14 +50,10 @@ count = 0
 sentence = []
 for group in [1,2,3,4]:
  with open(f"/john5/scr1/mhahn/PUKWAC/ukwac{group}.xml", "r", errors="surrogateescape") as inFile:
-   for line in inFile:
-      if line.startswith("<s>"):
-        count += 1
-#        if count % 1000 == 0:
-        # print(count)
-        process(sentence)
-        sentence = []
-      elif line.startswith("<"):
-        continue
-      else:
-        sentence.append(line.strip())
+  for line in inFile:
+   try:
+     print(line)
+   except UnicodeEncodeError:
+     print(line)
+     quit()
+
