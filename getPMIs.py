@@ -27,7 +27,8 @@ load1(marginalPerVerb, "marginalPerVerb")
 
 overallCount = sum([y for _, y in marginalPerVerb.items()])
 import math
-with open("/john5/scr1/mhahn/PUKWAC/pmis.tsv", "w") as outFile:
+with open("/john5/scr1/mhahn/PUKWAC/mis.tsv", "w") as outFile_MIs:
+ with open("/john5/scr1/mhahn/PUKWAC/pmis.tsv", "w") as outFile:
   for adverb in pairsPerAdverb:
     if marginalPerAdverb[adverb] < 100:
       continue
@@ -41,6 +42,7 @@ with open("/john5/scr1/mhahn/PUKWAC/pmis.tsv", "w") as outFile:
       print("\t".join([adverb, verb, str(pmi)]), file=outFile)
       mi += pmi * pairsPerVerb[verb][adverb]
     mi = mi / marginalPerAdverb[adverb]
+    print("\t".join([adverb, str(mi)]), file=outFile_MIs)
     print(adverb, mi, "MAXIMUM", math.log(len(pairsPerAdverb[adverb])))
 #    assert mi <= math.log(len(pairsPerAdverb[adverb])) + 0.1
 
