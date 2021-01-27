@@ -10,7 +10,7 @@ def save1(table, name):
   with open(f"/john5/scr1/mhahn/PUKWAC/{name}", "w") as outFile:
     for x in table:
       try:
-         print("\t".join([x, str(table[x])]).encode('utf8', 'ignore').decode("utf8"), file=outFile)
+         print("\t".join([x, str(table[x])]), file=outFile)
       except UnicodeEncodeError:
          print("ERROR")
 
@@ -33,7 +33,7 @@ def process(sentence):
             head_line = sentence[int(sentence[i][head])-1]
             assert head_line[position] == sentence[i][head]
             if int(sentence[i][position]) < int(sentence[i][head]):
-               adverb = sentence[i][lemma]
+               adverb = sentence[i][lemma].encode('utf8', 'ignore').decode("utf8")
                sumDistancePerAdverb[adverb] -= int(sentence[i][position]) - int(sentence[i][head])
                sumLogDistancePerAdverb[adverb] += math.log( - (int(sentence[i][position]) - int(sentence[i][head])))
                marginalPerAdverb[adverb] += 1 
