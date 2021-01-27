@@ -7,7 +7,7 @@ def save11(table, name):
   with open(f"/john5/scr1/mhahn/PUKWAC/{name}", "w") as outFile:
     for x in table:
       try:
-         print("\t".join([x[0], x[1], x[2], str(table[x])]).encode('utf8', 'ignore').decode("utf8"), file=outFile)
+         print("\t".join([x[0], x[1], x[2], str(table[x])]), file=outFile)
       except UnicodeEncodeError:
          print("ERROR", x[0].encode ('utf8', 'ignore'))
 
@@ -30,7 +30,9 @@ def process(sentence):
       adverbs = [adverb for adverb in adverbs if int(adverb[head]) == headIndex]
       for i in range(len(adverbs)):
           for j in range(i):
-              pairsCount[(adverbs[j][lemma], adverbs[i][lemma], sentence[headIndex-1][lemma])] += 1
+              ADVERB_i = adverbs[i][lemma].encode('utf8', 'ignore').decode("utf8")
+              ADVERB_j = adverbs[j][lemma].encode('utf8', 'ignore').decode("utf8")
+              pairsCount[(ADVERB_j, ADVERB_i, sentence[headIndex-1][lemma])] += 1
               assert adverbs[j][head] == adverbs[i][head]
               assert int(adverbs[j][head]) == headIndex
               pairsTotal += 1

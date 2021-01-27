@@ -10,7 +10,7 @@ def save1(table, name):
   with open(f"/john5/scr1/mhahn/PUKWAC/{name}", "w") as outFile:
     for x in table:
       try:
-         print("\t".join([x, str(table[x])]).encode('utf8', 'ignore').decode("utf8"), file=outFile)
+         print("\t".join([x, str(table[x])]), file=outFile)
       except UnicodeEncodeError:
          print("ERROR")
 
@@ -19,7 +19,7 @@ def save2(table, name):
     for x in table:
       for y in table[x]:
         try:
-          print("\t".join([x, y, str(table[x][y])]).encode('utf8', 'ignore').decode("utf8"), file=outFile)
+          print("\t".join([x, y, str(table[x][y])]), file=outFile)
         except UnicodeEncodeError:
           pass
 def record(verb, adverb):
@@ -61,7 +61,7 @@ def process(sentence):
             head_line = sentence[int(sentence[i][head])-1]
             assert head_line[position] == sentence[i][head]
             if int(sentence[i][position]) < int(sentence[i][head]):
-               record(verb = head_line[lemma], adverb = sentence[i][lemma])
+               record(verb = head_line[lemma].encode('utf8', 'ignore').decode("utf8"), adverb = sentence[i][lemma].encode('utf8', 'ignore').decode("utf8"))
 #            if int(head_line[position]) > int(head_line[head]):
 #               print(sentence[i], head_line)
        
