@@ -1,3 +1,5 @@
+library(tidyr)
+library(dplyr)
 
 mi = read.csv("~/CS_SCR/PUKWAC/adj_mis.tsv", sep="\t", header=F, quote='')   
 names(mi) <- c("Adjective", "MI")  
@@ -28,16 +30,19 @@ data$PMIDiff.R = resid(lm(PMIDiff~MIDiff, data=data, na.action=na.exclude))
 
 library(lme4)
 
-data2 = data[data$Frequency > 4,] %>% filter(!is.na(MIDiff), !is.na(PMIDiff))
+data2 = data[data$Frequency > 7,] %>% filter(!is.na(MIDiff), !is.na(PMIDiff))
 
 #summary(glmer(Flipped ~ PMIDiff.R + MIDiff + (1|Adjective_1) + (1|Adjective_2), family="binomial", data=data2, weights=data2$Frequency))
 
-model_mi = (glmer(Flipped ~ MIDiff + (1|Adjective_1) + (1|Adjective_2), family="binomial", data=data2, weights=data2$Frequency))
+model_mi = (glmer(Flipped ~ MIDiff + (1|Adjective_1) + (1|Adjective_2), family="binomial", data=data2, weights=data2$Frequency, na.action=na.exclude))
 
-model_pmi = (glmer(Flipped ~ PMIDiff + (1|Adjective_1) + (1|Adjective_2), family="binomial", data=data2, weights=data2$Frequency))
+model_pmi = (glmer(Flipped ~ PMIDiff + (1|Adjective_1) + (1|Adjective_2), family="binomial", data=data2, weights=data2$Frequency, na.action=na.exclude))
 
-data2$predict_mi = predict(glmer(Flipped ~ MIDiff + (1|Adjective_1) + (1|Adjective_2), family="binomial", data=data2, weights=data2$Frequency, na.action=na.exclude))
-data2$predict_pmi = predict(glmer(Flipped ~ PMIDiff + (1|Adjective_1) + (1|Adjective_2), family="binomial", data=data2, weights=data2$Frequency, na.action=na.exclude))
+data2$predict_mi = predict(model_mi)
+data2$predict_pmi = predict(model_pmi)
+
+anova(model_mi, model_pmi)
+
 
 data2$LogLik_mi = log(1/(1+exp(ifelse(data2$Flipped, -data2$predict_mi, data2$predict_mi))))
 data2$LogLik_pmi = log(1/(1+exp(ifelse(data2$Flipped, -data2$predict_pmi, data2$predict_pmi))))
@@ -47,5 +52,4 @@ data2$Improvement = data2$LogLik_pmi - data2$LogLik_mi
 (data2[order(-data2$Improvement*data2$Frequency),])[(1:100),]
 
 
-anova(model_mi, model_pmi)
 
