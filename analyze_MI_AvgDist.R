@@ -21,6 +21,9 @@ plot = ggplot(data %>% filter(Frequency > 500), aes(x=MI, y=AvgLogDist)) + geom_
 
 cinque = c("frankly", "fortunately", "allegedly", "probably", "once", "then", "perhaps", "wisely", "usually", "already", "always", "completely", "well")
 
+plot = ggplot(data %>% filter(Adverb %in% cinque), aes(x=MI, y=AvgLogDist)) + geom_text(aes(label=Adverb)) + theme_bw() + theme(legend.position="none")
+
+
 plot = ggplot(data %>% filter(Frequency > 1000) %>% mutate(Cinque = (Adverb %in% cinque)), aes(x=MI, y=AvgLogDist, color=Cinque)) + geom_text(aes(label=Adverb)) + theme_bw() + theme(legend.position="none")
 
 plot = ggplot(data %>% filter(Frequency > 5000), aes(x=MI, y=AvgLogDist)) + geom_text(aes(label=Adverb)) + theme_bw() + theme(legend.position="none", axis.text = element_text(size=20))

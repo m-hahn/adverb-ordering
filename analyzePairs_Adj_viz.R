@@ -19,6 +19,13 @@ data = merge(mi %>% rename(Adjective_1=Adjective), adjectivePairs, by=c("Adjecti
 data = merge(mi %>% rename(Adjective_2=Adjective), data, by=c("Adjective_2"), all.y=TRUE) 
 
 
+write.csv(data, file="analyzePairs_Adj_viz.R.tsv")
+
+library(tidyr)
+library(dplyr)
+
+data = read.csv("analyzePairs_Adj_viz.R.tsv")
+
 data2 = data %>% group_by(Adjective_1) %>% summarise(MI = mean(MI.y, na.rm=TRUE), First = 1-sum(Frequency*Flipped)/sum(Frequency), Overall = sum(Frequency)) %>% filter(Adjective_1 != "blah")
 
 library(ggplot2)
