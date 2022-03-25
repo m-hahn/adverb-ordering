@@ -1,10 +1,10 @@
 import random
 from collections import defaultdict
 
-pairsPerAdverb = {}
-pairsPerVerb = {}
-marginalPerAdverb = defaultdict(int)
-marginalPerVerb = defaultdict(int)
+pairsPerAdjective = {}
+pairsPerNoun = {}
+marginalPerAdjective = defaultdict(int)
+marginalPerNoun = defaultdict(int)
 overallPairsCount = 0
 def save1(table, name):
   with open(f"/john5/scr1/mhahn/PUKWAC/{name}", "w") as outFile:
@@ -12,7 +12,7 @@ def save1(table, name):
       try:
          print("\t".join([x, str(table[x])]), file=outFile)
       except UnicodeEncodeError:
-         print("ERROR")
+         assert False
 
 def save2(table, name):
   with open(f"/john5/scr1/mhahn/PUKWAC/{name}", "w") as outFile:
@@ -21,26 +21,31 @@ def save2(table, name):
         try:
           print("\t".join([x, y, str(table[x][y])]), file=outFile)
         except UnicodeEncodeError:
-          pass
-def record(verb, adverb):
-   if adverb not in     pairsPerAdverb:
-     pairsPerAdverb[adverb] = defaultdict(int)
-   if verb not in     pairsPerVerb:
-     pairsPerVerb[verb] = defaultdict(int)
-   pairsPerAdverb[adverb][verb] += 1
-   pairsPerVerb[verb][adverb] += 1
-   marginalPerAdverb[adverb] += 1
-   marginalPerVerb[verb] += 1
+         assert False
+def record(noun, adjective):
+   if not adjective.isalpha():
+       return
+   if not noun.isalpha():
+        return
+   if adjective not in     pairsPerAdjective:
+     pairsPerAdjective[adjective] = defaultdict(int)
+   if noun not in     pairsPerNoun:
+     pairsPerNoun[noun] = defaultdict(int)
+   pairsPerAdjective[adjective][noun] += 1
+   pairsPerNoun[noun][adjective] += 1
+   assert pairsPerAdjective[adjective][noun] == pairsPerNoun[noun][adjective]
+   marginalPerAdjective[adjective] += 1
+   marginalPerNoun[noun] += 1
    global overallPairsCount
    overallPairsCount += 1
    if overallPairsCount % 1000 == 0:
-     print(overallPairsCount, len(marginalPerVerb), len(marginalPerAdverb))
+     print(overallPairsCount, len(marginalPerNoun), len(marginalPerAdjective))
    if overallPairsCount % 100000 == 0:
      print("SAVING TABLES")
-     save2(pairsPerAdverb, "pairsPerAdverb")
-     save2(pairsPerVerb, "pairsPerVerb")
-     save1(marginalPerAdverb, "marginalPerAdverb")
-     save1(marginalPerVerb, "marginalPerVerb")
+     save2(pairsPerAdjective, "pairsPerAdjective")
+     save2(pairsPerNoun, "pairsPerNoun")
+     save1(marginalPerAdjective, "marginalPerAdjective")
+     save1(marginalPerNoun, "marginalPerNoun")
 
 
 word = 0
@@ -57,11 +62,13 @@ def process(sentence):
       if len(sentence[i]) < 6:
          print(sentence[i])
       else:
-         if sentence[i][pos] == "RB" and sentence[i][relation] == "ADV":
+         if sentence[i][pos] == "JJ" and sentence[i][relation] == "NMOD":
             head_line = sentence[int(sentence[i][head])-1]
-            assert head_line[position] == sentence[i][head]
+            if head_line[position] != sentence[i][head]:
+                print("WEIRD", sentence[i], head_line)
+                continue
             if int(sentence[i][position]) < int(sentence[i][head]):
-               record(verb = head_line[lemma].encode('utf8', 'ignore').decode("utf8"), adverb = sentence[i][lemma].encode('utf8', 'ignore').decode("utf8"))
+               record(noun = head_line[lemma].encode('utf8', 'ignore').decode("utf8"), adjective = sentence[i][lemma].encode('utf8', 'ignore').decode("utf8"))
 #            if int(head_line[position]) > int(head_line[head]):
 #               print(sentence[i], head_line)
        

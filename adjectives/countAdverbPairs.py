@@ -24,25 +24,26 @@ def process(sentence):
     global pairsTotal
     sentence = [x.split("\t") for x in sentence]
 #    print(sentence)
-    adverbs = [word for word in sentence if word[pos] == "RB" and word[relation] == "ADV" and int(word[position]) < int(word[head])]
-    heads = set([int(word[head]) for word in adverbs])
+    adjectives = [word for word in sentence if word[pos] == "JJ" and word[relation] == "NMOD" and int(word[position]) < int(word[head])]
+    heads = set([int(word[head]) for word in adjectives])
     for headIndex in heads:
-      adverbs = [adverb for adverb in adverbs if int(adverb[head]) == headIndex]
-      for i in range(len(adverbs)):
+      adjectives = [adjective for adjective in adjectives if int(adjective[head]) == headIndex]
+      for i in range(len(adjectives)):
           for j in range(i):
-              ADVERB_i = adverbs[i][lemma].encode('utf8', 'ignore').decode("utf8")
-              ADVERB_j = adverbs[j][lemma].encode('utf8', 'ignore').decode("utf8")
-              pairsCount[(ADVERB_j, ADVERB_i, sentence[headIndex-1][lemma].encode('utf8', 'ignore').decode("utf8"))] += 1
-              assert adverbs[j][head] == adverbs[i][head]
-              assert int(adverbs[j][head]) == headIndex
-              pairsTotal += 1
-              if pairsTotal % 1000 == 0:
+              ADVERB_i = adjectives[i][lemma].encode('utf8', 'ignore').decode("utf8")
+              ADVERB_j = adjectives[j][lemma].encode('utf8', 'ignore').decode("utf8")
+              if ADVERB_i.isalpha() and ADVERB_j.isalpha():
+               pairsCount[(ADVERB_j, ADVERB_i, sentence[headIndex-1][lemma].encode('utf8', 'ignore').decode("utf8"))] += 1
+               assert adjectives[j][head] == adjectives[i][head]
+               assert int(adjectives[j][head]) == headIndex
+               pairsTotal += 1
+               if pairsTotal % 1000 == 0:
                  print(pairsTotal)
 #                 print(pairsCount)
  #                quit()
-              if pairsTotal % 10000 == 0:
+               if pairsTotal % 100000 == 0:
                   print("SAVING")
-                  save11(pairsCount, "adverbPairsWithVerb")
+                  save11(pairsCount, "adjectivePairsWithNoun")
 count = 0
 sentence = []
 for group in [1,2,3,4]:

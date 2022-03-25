@@ -29,11 +29,11 @@ def load2(table, name):
        table[x][y] = int(value)
 
 load2(pairsPerAdverb, "pairsPerAdverb")
-load2(pairsPerVerb, "pairsPerBerb")
+load2(pairsPerVerb, "pairsPerVerb")
 load1(marginalPerAdverb, "marginalPerAdverb")
 load1(marginalPerVerb, "marginalPerVerb")
 
-overallCount = sum([y for _, y in marginalPerVerb.items()])
+overallCount = sum([y for _, y in marginalPerAdverb.items()])
 import math
 with open("/john5/scr1/mhahn/PUKWAC/mis.tsv", "w") as outFile_MIs:
  with open("/john5/scr1/mhahn/PUKWAC/pmis.tsv", "w") as outFile:
@@ -42,14 +42,16 @@ with open("/john5/scr1/mhahn/PUKWAC/mis.tsv", "w") as outFile_MIs:
       continue
     assert adverb in marginalPerAdverb
     mi = 0
+    countAcrossVerbs = 0
     for verb in pairsPerAdverb[adverb]:
       assert verb in marginalPerVerb
 #      print(adverb, verb)
       assert pairsPerVerb[verb][adverb] == pairsPerAdverb[adverb][verb], (verb, adverb, pairsPerVerb[verb][adverb], pairsPerAdverb[adverb][verb])
+      countAcrossVerbs += pairsPerVerb[verb][adverb]
       pmi = math.log(pairsPerVerb[verb][adverb]) - math.log(marginalPerAdverb[adverb]) - math.log(marginalPerVerb[verb]) + math.log(overallCount)
       print("\t".join([adverb, verb, str(pmi)]).encode('utf8', 'ignore').decode("utf8"), file=outFile)
-      mi += pmi * pairsPerVerb[verb][adverb]
-    mi = mi / marginalPerAdverb[adverb]
+      mi += pmi * pairsPerVerb[verb][adverb] / marginalPerAdverb[adverb]
+    assert countAcrossVerbs == marginalPerAdverb[adverb]
     print("\t".join([adverb, str(mi)]).encode('utf8', 'ignore').decode("utf8"), file=outFile_MIs)
     print(adverb, mi, "MAXIMUM", math.log(len(pairsPerAdverb[adverb])))
 #    assert mi <= math.log(len(pairsPerAdverb[adverb])) + 0.1
